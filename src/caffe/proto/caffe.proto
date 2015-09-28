@@ -269,7 +269,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 137 (last added: reduction_param)
+// LayerParameter next available layer-specific ID: 138 (last added: spatial_transformer_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -346,6 +346,7 @@ message LayerParameter {
   optional ReshapeParameter reshape_param = 133;
   optional SigmoidParameter sigmoid_param = 124;
   optional SoftmaxParameter softmax_param = 125;
+  optional SpatialTransformerParameter spatial_transformer_param = 137;
   optional SPPParameter spp_param = 132;
   optional SliceParameter slice_param = 126;
   optional TanHParameter tanh_param = 127;
@@ -848,6 +849,18 @@ message SoftmaxParameter {
   // Any other axes will be evaluated as independent softmaxes.
   optional int32 axis = 2 [default = 1];
 }
+
+message SpatialTransformerParameter {
+  enum TransformType {
+    AFFINE = 0;
+  }
+  optional TransformType type = 1 [default = AFFINE]; // type of transform
+  optional uint32 grid_size = 2; // The resampling grid size (square)
+  optional uint32 grid_h = 3; // The resampling grid height
+  optional uint32 grid_w = 4; // The resampling grid width
+
+}
+
 
 message TanHParameter {
   enum Engine {
