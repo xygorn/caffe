@@ -212,6 +212,7 @@ class HDF5OutputLayer : public Layer<Dtype> {
   hid_t file_id_;
   Blob<Dtype> data_blob_;
   Blob<Dtype> label_blob_;
+  int iter_;
 };
 
 /**
