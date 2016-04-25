@@ -306,7 +306,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 145 (last added: crop_param)
+// LayerParameter next available layer-specific ID: 146 (last added: spatial_transformer_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -395,6 +395,7 @@ message LayerParameter {
   optional ScaleParameter scale_param = 142;
   optional SigmoidParameter sigmoid_param = 124;
   optional SoftmaxParameter softmax_param = 125;
+  optional SpatialTransformerParameter spatial_transformer_param = 145;
   optional SPPParameter spp_param = 132;
   optional SliceParameter slice_param = 126;
   optional TanHParameter tanh_param = 127;
@@ -1107,6 +1108,19 @@ message SoftmaxParameter {
   // Any other axes will be evaluated as independent softmaxes.
   optional int32 axis = 2 [default = 1];
 }
+
+message SpatialTransformerParameter {
+  enum TransformType {
+    AFFINE = 0;
+    INVERSE_AFFINE = 1;
+  }
+  optional TransformType type = 1 [default = AFFINE]; // type of transform
+  optional uint32 grid_size = 2; // The resampling grid size (square)
+  optional uint32 grid_h = 3; // The resampling grid height
+  optional uint32 grid_w = 4; // The resampling grid width
+  repeated double const_params = 5; // 6 values of transform matrix
+}
+
 
 message TanHParameter {
   enum Engine {
