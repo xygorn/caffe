@@ -5,7 +5,7 @@
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/gpu_util.cuh"
-#include "caffe/spatial_transformer_layer.hpp"
+#include "caffe/layers/spatial_transformer_layer.hpp"
 
 namespace caffe {
 	template <typename Dtype>

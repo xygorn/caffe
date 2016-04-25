@@ -3,7 +3,7 @@
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/interp.hpp"
-#include "caffe/interp_layer.hpp"
+#include "caffe/layers/interp_layer.hpp"
 
 namespace caffe {
 

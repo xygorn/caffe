@@ -6,7 +6,7 @@
 #include "caffe/util/io.hpp"
 #include "caffe/layer_factory.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/seginfogain_loss_layer.hpp"
+#include "caffe/layers/seginfogain_loss_layer.hpp"
 
 namespace caffe {
 

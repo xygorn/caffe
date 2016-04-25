@@ -6,7 +6,7 @@
 #include "caffe/layer.hpp"
 //#include "caffe/util/io.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/seg_accuracy_layer.hpp"
+#include "caffe/layers/seg_accuracy_layer.hpp"
 
 
 // TODO: check we should clear confusion_matrix somewhere!

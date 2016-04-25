@@ -4,7 +4,7 @@
 
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/seginfogain_loss_layer.hpp"
+#include "caffe/layers/seginfogain_loss_layer.hpp"
 
 namespace caffe {
 	const float kLOG_THRESHOLDb = 1e-20;
