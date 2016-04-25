@@ -306,7 +306,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 148 (last added: seginfogain_loss_param)
+// LayerParameter next available layer-specific ID: 149 (last added: interp_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -381,6 +381,7 @@ message LayerParameter {
   optional InfogainLossParameter infogain_loss_param = 116;
   optional InnerProductParameter inner_product_param = 117;
   optional InputParameter input_param = 143;
+  optional InterpParameter interp_param = 148;
   optional LogParameter log_param = 134;
   optional LRNParameter lrn_param = 118;
   optional MemoryDataParameter memory_data_param = 119;
@@ -829,6 +830,16 @@ message InputParameter {
   repeated BlobShape shape = 1;
 }
 
+// Message that stores parameters used by InterpLayer
+message InterpParameter {
+  optional int32 height = 1 [default = 0]; // Height of output
+  optional int32 width = 2 [default = 0]; // Width of output
+  optional int32 zoom_factor = 3 [default = 1]; // zoom factor
+  optional int32 shrink_factor = 4 [default = 1]; // shrink factor
+  optional int32 pad_beg = 5 [default = 0]; // padding at begin of input
+  optional int32 pad_end = 6 [default = 0]; // padding at end of input
+}
+
 // Message that stores parameters used by LogLayer
 message LogParameter {
   // LogLayer computes outputs y = log_base(shift + scale * x), for base > 0.
@@ -1039,7 +1050,7 @@ message ReshapeParameter {
   optional int32 num_axes = 3 [default = -1];
 }
 
-<<<<<<< HEAD
+
 message ScaleParameter {
   // The first axis of bottom[0] (the first input Blob) along which to apply
   // bottom[1] (the second input Blob).  May be negative to index from the end
@@ -1075,7 +1086,8 @@ message ScaleParameter {
   // may be more efficient).  Initialized with bias_filler (defaults to 0).
   optional bool bias_term = 4 [default = false];
   optional FillerParameter bias_filler = 5;
-=======
+}
+
 message SegAccuracyParameter {
   enum AccuracyMetric {
     PixelAccuracy = 0;
@@ -1085,7 +1097,6 @@ message SegAccuracyParameter {
   optional AccuracyMetric metric = 1 [default = PixelAccuracy];
   // will ignore pixels with this value when computing accuracy
   repeated int32 ignore_label = 2;
->>>>>>> add segmentation accuracy layer
 }
 
 message SegInfogainLossParameter {
