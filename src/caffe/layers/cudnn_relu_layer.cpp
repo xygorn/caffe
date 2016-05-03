@@ -13,6 +13,11 @@ void CuDNNReLULayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   CUDNN_CHECK(cudnnCreate(&handle_));
   cudnn::createTensorDesc<Dtype>(&bottom_desc_);
   cudnn::createTensorDesc<Dtype>(&top_desc_);
+#if CUDNN_VERSION_MIN(5, 0, 0)
+  cudnnCreateActivationDescriptor(&activation_desc_);
+  cudnnSetActivationDescriptor(activation_desc_,
+      CUDNN_ACTIVATION_RELU, CUDNN_PROPAGATE_NAN, 0);
+#endif
   handles_setup_ = true;
 }
 
@@ -31,6 +36,9 @@ CuDNNReLULayer<Dtype>::~CuDNNReLULayer() {
 
   cudnnDestroyTensorDescriptor(this->bottom_desc_);
   cudnnDestroyTensorDescriptor(this->top_desc_);
+#if CUDNN_VERSION_MIN(5, 0, 0)
+  cudnnDestroyActivationDescriptor(this->activation_desc_);
+#endif
   cudnnDestroy(this->handle_);
 }
 
