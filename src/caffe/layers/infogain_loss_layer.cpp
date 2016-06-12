@@ -31,9 +31,7 @@ void InfogainLossLayer<Dtype>::Reshape(
   } else {
     infogain = bottom[2];
   }
-  CHECK_EQ(bottom[1]->channels(), 1);
-  CHECK_EQ(bottom[1]->height(), 1);
-  CHECK_EQ(bottom[1]->width(), 1);
+  CHECK_EQ(bottom[1]->count(1), 1);
   const int num = bottom[0]->num();
   const int dim = bottom[0]->count() / num;
   CHECK_EQ(infogain->num(), 1);
