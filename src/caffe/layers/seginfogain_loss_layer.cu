@@ -6,8 +6,9 @@
 #include "caffe/util/math_functions.hpp"
 #include "caffe/layers/seginfogain_loss_layer.hpp"
 
+#define kLOG_THRESHOLDb 1e-20;
+
 namespace caffe {
-	const float kLOG_THRESHOLDb = 1e-20;
 template <typename Dtype>
 __global__ void SegInfogainLossForwardGPU(const int nthreads,
           const Dtype* prob_data, const Dtype* label, Dtype* loss,

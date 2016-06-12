@@ -7,16 +7,10 @@
 
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"
-#include "caffe/common_layers.hpp"
-#include "caffe/data_layers.hpp"
 #include "caffe/layer.hpp"
-#include "caffe/loss_layers.hpp"
-#include "caffe/neuron_layers.hpp"
 #include "caffe/proto/caffe.pb.h"
-#include "caffe/util/modified_permutohedral.hpp"
 #include "caffe/util/im2col.hpp"
 #include <boost/shared_array.hpp>
-#include "caffe/util/confusion_matrix.hpp"
 
 namespace caffe {
 
@@ -57,7 +51,7 @@ protected:
 		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 	virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
 		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-	bool AllowForceBackward(const int bottom_index);
+	//bool AllowForceBackward(const int bottom_index);
 	Blob<Dtype> constParamsBlob_;
 	int grid_h_, grid_w_;
 	int num_parameters_;

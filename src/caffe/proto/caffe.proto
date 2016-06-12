@@ -306,7 +306,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 149 (last added: bn_param)
+// LayerParameter next available layer-specific ID: 150 (last added: multi_stage_meanfield_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -385,6 +385,7 @@ message LayerParameter {
   optional LogParameter log_param = 134;
   optional LRNParameter lrn_param = 118;
   optional MemoryDataParameter memory_data_param = 119;
+  optional MultiStageMeanfieldParameter multi_stage_meanfield_param = 149;
   optional MVNParameter mvn_param = 120;
   optional PoolingParameter pooling_param = 121;
   optional PowerParameter power_param = 122;
@@ -460,6 +461,26 @@ message LossParameter {
 // Messages that store parameters used by individual layer types follow, in
 // alphabetical order.
 
+// Message that stores parameters used by MultiStageMeanfieldLayer
+  message MultiStageMeanfieldParameter {
+    enum Mode {
+      POTTS = 0;
+    }
+    optional Mode compatibility_mode = 1 [default = POTTS];
+    optional float threshold = 2;
+
+    required float theta_alpha = 3 [default = 10.];
+    required float theta_beta = 4 [default = 10.];
+    required float theta_gamma = 5 [default = 10.];
+
+    required uint32 num_iterations = 6 [default = 1];
+    optional float spatial_filter_weight = 7 [default = 1];
+    optional float bilateral_filter_weight = 8 [default = 1];
+
+    optional float forced_spatial_filter_weight = 9;
+    optional float forced_bilateral_filter_weight = 10;
+  }
+  
 message AccuracyParameter {
   // When computing accuracy, count as correct by comparing the true label to
   // the top k scoring classes.  By default, only compare to the top scoring
