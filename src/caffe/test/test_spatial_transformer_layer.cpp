@@ -6,7 +6,7 @@
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"
 #include "caffe/filler.hpp"
-#include "caffe/spatial_transformer_layer.hpp"
+#include "caffe/layers/spatial_transformer_layer.hpp"
 
 #include "caffe/test/test_caffe_main.hpp"
 #include "caffe/test/test_gradient_check_util.hpp"
@@ -16,22 +16,36 @@ namespace caffe {
 template <typename TypeParam>
 class SpatialTransformerLayerTest : public MultiDeviceTest<TypeParam> {
   typedef typename TypeParam::Dtype Dtype;
-
+public:
+	void set3D() {
+	  blob_bottom_param_->Reshape(1,12,1,1);
+	  blob_bottom_param_->mutable_cpu_data()[0] = 1;
+		blob_bottom_param_->mutable_cpu_data()[1] = 0;
+		blob_bottom_param_->mutable_cpu_data()[2] = 0;
+		blob_bottom_param_->mutable_cpu_data()[3] = 0;
+		blob_bottom_param_->mutable_cpu_data()[4] = 0;
+		blob_bottom_param_->mutable_cpu_data()[5] = 1;
+		blob_bottom_param_->mutable_cpu_data()[6] = 0;
+		blob_bottom_param_->mutable_cpu_data()[7] = 0;
+		blob_bottom_param_->mutable_cpu_data()[8] = 0;
+		blob_bottom_param_->mutable_cpu_data()[9] = 0;
+		blob_bottom_param_->mutable_cpu_data()[10] = 1;
+		blob_bottom_param_->mutable_cpu_data()[11] = 0;
+  }
  protected:
 	 SpatialTransformerLayerTest()
 		 : blob_bottom_(new Blob<Dtype>(1, 2, 1, 1)),
 		 blob_bottom_param_(new Blob<Dtype>(1, 6, 1, 1)),
 		 blob_top_(new Blob<Dtype>(1, 2, 1, 1)) {
-		 for (int it = 0; it < 1; it++)
-		 {
-			 blob_bottom_param_->mutable_cpu_data()[it * 6 + 0] = 1;
-			 blob_bottom_param_->mutable_cpu_data()[it * 6 + 1] = 0;
-			 blob_bottom_param_->mutable_cpu_data()[it * 6 + 2] = 0;
-			 blob_bottom_param_->mutable_cpu_data()[it * 6 + 3] = 0;
-			 blob_bottom_param_->mutable_cpu_data()[it * 6 + 4] = 1;
-			 blob_bottom_param_->mutable_cpu_data()[it * 6 + 5] = 0;
-		 }
-		 blob_bottom_vec_.push_back(blob_bottom_param_);
+	
+		blob_bottom_param_->mutable_cpu_data()[0] = 1;
+		blob_bottom_param_->mutable_cpu_data()[1] = 0;
+		blob_bottom_param_->mutable_cpu_data()[2] = 0;
+		blob_bottom_param_->mutable_cpu_data()[3] = 0;
+		blob_bottom_param_->mutable_cpu_data()[4] = 1;
+		blob_bottom_param_->mutable_cpu_data()[5] = 0;
+
+		blob_bottom_vec_.push_back(blob_bottom_param_);
 
 		 FillerParameter filler_param;
 		 GaussianFiller<Dtype> filler(filler_param);
@@ -40,6 +54,7 @@ class SpatialTransformerLayerTest : public MultiDeviceTest<TypeParam> {
 
 		 blob_top_vec_.push_back(blob_top_);
 	 }
+	
   /*virtual void SetUp() {
     Caffe::set_random_seed(1701);
     blob_bottom_->Reshape(2, 3, 6, 5);
@@ -55,6 +70,9 @@ class SpatialTransformerLayerTest : public MultiDeviceTest<TypeParam> {
 	delete blob_bottom_param_;
 	delete blob_top_;
   }
+
+  
+
   Blob<Dtype>* const blob_bottom_;
   Blob<Dtype>* const blob_bottom_param_;
   Blob<Dtype>* const blob_top_;
@@ -473,15 +491,15 @@ TYPED_TEST(PoolingLayerTest, TestForwardMaxTopMask) {
   this->TestForwardRectWide();
 }
 */
-TYPED_TEST(SpatialTransformerLayerTest, TestGradient) {
+TYPED_TEST(SpatialTransformerLayerTest, TestGradient_AFFINE) {
   typedef typename TypeParam::Dtype Dtype;
-
+  
       LayerParameter layer_param;
 
 	  SpatialTransformerParameter* param = layer_param.mutable_spatial_transformer_param();
 	  param->set_grid_h(1);
 	  param->set_grid_w(1);
-	  param->set_type(SpatialTransformerParameter_TransformType::SpatialTransformerParameter_TransformType_AFFINE);
+	  param->set_type(SpatialTransformerParameter_TransformType_AFFINE);
 	  
 	  SpatialTransformerLayer<Dtype> layer(layer_param);
 	  GradientChecker<Dtype> checker(1e-2, 1e-2, 1701);
@@ -490,6 +508,62 @@ TYPED_TEST(SpatialTransformerLayerTest, TestGradient) {
     
   
 }
+TYPED_TEST(SpatialTransformerLayerTest, TestGradient_INVERSE_AFFINE) {
+  typedef typename TypeParam::Dtype Dtype;
+
+      LayerParameter layer_param;
+
+	  SpatialTransformerParameter* param = layer_param.mutable_spatial_transformer_param();
+	  param->set_grid_h(1);
+	  param->set_grid_w(1);
+	  param->set_type(SpatialTransformerParameter_TransformType_INVERSE_AFFINE);
+	  
+	  SpatialTransformerLayer<Dtype> layer(layer_param);
+	  GradientChecker<Dtype> checker(1e-2, 1e-2, 1701);
+	  checker.CheckGradientExhaustive(&layer, this->blob_bottom_vec_,
+		  this->blob_top_vec_, 1); 
+    
+  
+}
+TYPED_TEST(SpatialTransformerLayerTest, TestGradient_AFFINE3D) {
+  typedef typename TypeParam::Dtype Dtype;
+  
+		this->set3D();
+      LayerParameter layer_param;
+
+	  SpatialTransformerParameter* param = layer_param.mutable_spatial_transformer_param();
+	  param->set_grid_h(1);
+	  param->set_grid_w(1);
+	  param->set_type(SpatialTransformerParameter_TransformType_AFFINE3D);
+	  
+	  SpatialTransformerLayer<Dtype> layer(layer_param);
+
+
+	  GradientChecker<Dtype> checker(1e-2, 1e-2, 1701);
+	  checker.CheckGradientExhaustive(&layer, this->blob_bottom_vec_,
+		  this->blob_top_vec_, 1); 
+    
+  
+}
+TYPED_TEST(SpatialTransformerLayerTest, TestGradient_INVERSE_AFFINE3D) {
+  typedef typename TypeParam::Dtype Dtype;
+		this->set3D();
+
+      LayerParameter layer_param;
+
+	  SpatialTransformerParameter* param = layer_param.mutable_spatial_transformer_param();
+	  param->set_grid_h(1);
+	  param->set_grid_w(1);
+	  param->set_type(SpatialTransformerParameter_TransformType_INVERSE_AFFINE3D);
+	  
+	  SpatialTransformerLayer<Dtype> layer(layer_param);
+	  GradientChecker<Dtype> checker(1e-2, 1e-2, 1701);
+	  checker.CheckGradientExhaustive(&layer, this->blob_bottom_vec_,
+		  this->blob_top_vec_, 1); 
+    
+  
+}
+
 /*
 TYPED_TEST(PoolingLayerTest, TestForwardMaxPadded) {
   typedef typename TypeParam::Dtype Dtype;
@@ -625,6 +699,7 @@ TYPED_TEST(PoolingLayerTest, TestGradientAvePadded) {
   }
 }
 */
+/*
 #ifdef USE_CUDNN
 template <typename Dtype>
 class CuDNNPoolingLayerTest : public GPUDeviceTest<Dtype> {
@@ -1033,7 +1108,7 @@ TYPED_TEST(CuDNNPoolingLayerTest, PrintBackwardCuDNN) {
     cout << "bottom diff " << i << " " << this->blob_bottom_->cpu_diff()[i] << endl;
   }
 }
-*/
+* /
 
 TYPED_TEST(CuDNNPoolingLayerTest, TestForwardMaxCuDNN) {
   this->TestForwardSquare();
@@ -1050,7 +1125,7 @@ TYPED_TEST(CuDNNPoolingLayerTest, TestForwardMaxTopMaskCuDNN) {
   this->TestForwardRectHigh();
   this->TestForwardRectWide();
 }
-*/
+* /
 
 TYPED_TEST(CuDNNPoolingLayerTest, TestGradientMaxCuDNN) {
   for (int kernel_h = 3; kernel_h <= 4; kernel_h++) {
@@ -1134,7 +1209,7 @@ TYPED_TEST(CuDNNPoolingLayerTest, TestGradientMaxTopMaskCuDNN) {
     }
   }
 }
-*/
+* /
 
 TYPED_TEST(CuDNNPoolingLayerTest, TestForwardAveCuDNN) {
   LayerParameter layer_param;
@@ -1197,5 +1272,5 @@ TYPED_TEST(CuDNNPoolingLayerTest, TestGradientAvePaddedCuDNN) {
 }
 
 #endif
-
+*/
 }  // namespace caffe

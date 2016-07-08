@@ -9,7 +9,7 @@
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"
 #include "caffe/filler.hpp"
-#include "caffe/seginfogain_loss_layer.hpp"
+#include "caffe/layers/seginfogain_loss_layer.hpp"
 
 #include "caffe/test/test_caffe_main.hpp"
 #include "caffe/test/test_gradient_check_util.hpp"
@@ -30,7 +30,7 @@ class SegInfogainLossLayerTest : public MultiDeviceTest<TypeParam> {
 	  blob_top_loss_(new Blob<Dtype>()) {
     // fill the values
     FillerParameter filler_param;
-    filler_param.add_std(10);
+    filler_param.set_std(10);
     GaussianFiller<Dtype> filler(filler_param);
     filler.Fill(this->blob_bottom_data_);
 

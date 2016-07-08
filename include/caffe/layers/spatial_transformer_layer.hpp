@@ -53,7 +53,8 @@ protected:
 		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 	//bool AllowForceBackward(const int bottom_index);
 	Blob<Dtype> constParamsBlob_;
-	int grid_h_, grid_w_;
+	vector<Blob<Dtype> > buffer_;
+	int grid_h_, grid_w_, grid_d_;
 	int num_parameters_;
 
 };

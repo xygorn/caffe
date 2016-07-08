@@ -1172,9 +1172,11 @@ message SpatialTransformerParameter {
   enum TransformType {
     AFFINE = 0;
     INVERSE_AFFINE = 1;
+    AFFINE3D = 2;
+    INVERSE_AFFINE3D = 3;
   }
   optional TransformType type = 1 [default = AFFINE]; // type of transform
-  optional uint32 grid_size = 2; // The resampling grid size (square)
+  repeated uint32 grid_size = 2; // The resampling grid size (square)
   optional uint32 grid_h = 3; // The resampling grid height
   optional uint32 grid_w = 4; // The resampling grid width
   repeated double const_params = 5; // 6 values of transform matrix
