@@ -31,7 +31,7 @@ template <typename Dtype>
 void HDF5OutputLayer<Dtype>::SaveBlobs() {
   // TODO: no limit on the number of blobs
   LOG(INFO) << "Saving HDF5 file " << file_name_ << " iteration " << iter_;
-  CHECK_EQ(data_blob_.num(), label_blob_.num()) <<
+  CHECK_EQ(data_blob_.shape(0), label_blob_.shape(0)) <<
       "data blob and label blob must have the same batch size";
   ostringstream dataset_name;
   dataset_name << HDF5_DATA_DATASET_NAME << iter_;
@@ -39,7 +39,7 @@ void HDF5OutputLayer<Dtype>::SaveBlobs() {
   dataset_name.str("");
   dataset_name << HDF5_DATA_LABEL_NAME << iter_;
   hdf5_save_nd_dataset(file_id_, dataset_name.str(), label_blob_);
-  LOG(INFO) << "Successfully saved " << data_blob_.num() << " rows";
+  LOG(INFO) << "Successfully saved " << data_blob_.shape(0) << " rows";
   iter_++;
 }
 
@@ -47,15 +47,13 @@ template <typename Dtype>
 void HDF5OutputLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   CHECK_GE(bottom.size(), 2);
-  CHECK_EQ(bottom[0]->num(), bottom[1]->num());
-  data_blob_.Reshape(bottom[0]->num(), bottom[0]->channels(),
-                     bottom[0]->height(), bottom[0]->width());
-  label_blob_.Reshape(bottom[1]->num(), bottom[1]->channels(),
-                     bottom[1]->height(), bottom[1]->width());
-  const int data_datum_dim = bottom[0]->count() / bottom[0]->num();
-  const int label_datum_dim = bottom[1]->count() / bottom[1]->num();
+  CHECK_EQ(bottom[0]->shape(0), bottom[1]->shape(0));
+  data_blob_.Reshape(bottom[0]->shape());
+  label_blob_.Reshape(bottom[1]->shape());
+  const int data_datum_dim = bottom[0]->count() / bottom[0]->shape(0);
+  const int label_datum_dim = bottom[1]->count() / bottom[1]->shape(0);
 
-  for (int i = 0; i < bottom[0]->num(); ++i) {
+  for (int i = 0; i < bottom[0]->shape(0); ++i) {
     caffe_copy(data_datum_dim, &bottom[0]->cpu_data()[i * data_datum_dim],
         &data_blob_.mutable_cpu_data()[i * data_datum_dim]);
     caffe_copy(label_datum_dim, &bottom[1]->cpu_data()[i * label_datum_dim],
